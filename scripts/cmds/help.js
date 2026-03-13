@@ -7,7 +7,7 @@ module.exports = {
     name: "help",
     aliases: ["menu", "commands"],
     version: "5.0",
-    author: "AKASH",
+    author: "EryXenX",
     shortDescription: "Show all commands",
     longDescription: "Show all commands in fancy font with boxes",
     category: "system",
@@ -16,9 +16,7 @@ module.exports = {
 
   onStart: async function({ message, args, prefix }) {
     const allCommands = global.GoatBot.commands;
-    const categories = {};
 
-    // Command font (𝐀𝐀𝐀𝐀𝐁𝐁 style)
     const fancyFont = (str) => str.replace(/[A-Za-z]/g, (c) => {
       const map = {
         A:"𝐀", B:"𝐁", C:"𝐂", D:"𝐃", E:"𝐄", F:"𝐅", G:"𝐆", H:"𝐇",
@@ -33,7 +31,6 @@ module.exports = {
       return map[c] || c;
     });
 
-    // Category font (𝚂𝚈𝚂𝚃𝙴𝙼 style) for ALL categories
     const categoryFont = (str) => str.split("").map(c => {
       const map = {
         A:"𝙰", B:"𝙱", C:"𝙲", D:"𝙳", E:"𝙴", F:"𝙵", G:"𝙶", H:"𝙷",
@@ -50,18 +47,36 @@ module.exports = {
 
     const cleanCategoryName = (text) => text ? text.toLowerCase() : "others";
 
-    // Categorize commands
+    // যদি args[0 থাকে, সেটা specific command
+    if (args[0]) {
+      const cmdName = args[0].toLowerCase();
+      const cmd = allCommands.get(cmdName) || [...allCommands.values()].find(c => c.config.aliases?.includes(cmdName));
+      if (!cmd) return message.reply(`❌ Command '${cmdName}' not found!`);
+
+      const infoMsg = 
+`│\n│  ${fancyFont("COMMAND INFO")}\n│  ───────────────\n│
+│  ${fancyFont("NAME")}       : ${fancyFont(cmd.config.name)}
+│  ${fancyFont("ALIASES")}    : ${cmd.config.aliases?.join(", ") || "None"}
+│  ${fancyFont("CATEGORY")}   : ${categoryFont((cmd.config.category || "Others").toUpperCase())}
+│  ${fancyFont("VERSION")}    : ${cmd.config.version}
+│  ${fancyFont("AUTHOR")}     : ${cmd.config.author}
+│  ${fancyFont("DESCRIPTION")} : ${cmd.config.longDescription || cmd.config.shortDescription}
+│  ${fancyFont("USAGE")}      : ${prefix}${cmd.config.guide.replace("{pn}", cmd.config.name)}
+│`;
+      return message.reply(infoMsg);
+    }
+
+    // যদি args[0 না থাকে, সব commands দেখাও
+    const categories = {};
     for (const [name, cmd] of allCommands) {
       const cat = cleanCategoryName(cmd.config.category);
       if (!categories[cat]) categories[cat] = [];
       categories[cat].push(name);
     }
 
-    // Format commands **inside the box**
     const formatCommandsBox = (cmds) =>
       cmds.sort().map(c => `│  │ ⎙ ${fancyFont(c)}`).join("\n");
 
-    // Build message
     let msg = `│\n│  ${fancyFont("COMMANDS MENU")}\n│  ───────────────\n`;
     msg += `│  ${fancyFont("PREFIX")} : ${prefix}\n`;
     msg += `│  ${fancyFont("TOTAL")}  : ${allCommands.size}\n`;
@@ -75,7 +90,6 @@ module.exports = {
 
     msg += `│  𝐔𝐒𝐄 : ${prefix}help <command>\n│`;
 
-    // GIFs array
     const gifURLs = [
       "https://i.imgur.com/Xw6JTfn.gif",
       "https://i.imgur.com/mW0yjZb.gif",
