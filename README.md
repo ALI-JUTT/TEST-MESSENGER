@@ -116,7 +116,7 @@ This fork adds personal configurations and improvements on top of the existing f
   <a href="https://facebook.com/EryXenX">
     <img src="https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white" />
   </a>
-  <a href="https://t.me/EryXenX">
+  <a href="https://t.me/EryXenX_Official">
     <img src="https://img.shields.io/badge/Telegram-0088CC?style=for-the-badge&logo=telegram&logoColor=white" />
   </a>
   <a href="https://youtube.com/@EryXenX">
